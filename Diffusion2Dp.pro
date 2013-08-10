@@ -11,7 +11,8 @@ SOURCES += main.cpp \
     diffusion2dp.cpp \
     functor2d.cpp \
     boundary2d.cpp \
-    data.cpp
+    data.cpp \
+    gaussseidel.cpp
 
 HEADERS += \
     node2d.h \
@@ -19,7 +20,8 @@ HEADERS += \
     diffusion2dp.h \
     functor2d.h \
     boundary2d.h \
-    data.h
+    data.h \
+    gaussseidel.h
 
 FORMS +=
 

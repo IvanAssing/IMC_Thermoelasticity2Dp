@@ -2,14 +2,18 @@
 
 #include "imc_dfm.h"
 #include "diffusion2dp.h"
+#include "gaussseidel.h"
 
 
 
 int main()
 {
-    Constant2D zero(0.0q);
 
-    Boundary2D bn(Dirichlet, &zero);
+    tFloat *x = new tFloat[2];
+
+    GaussSeidel sys(x, 2);
+
+    sys(1, 2.0, 4.0);
 
     return 0;
 }
