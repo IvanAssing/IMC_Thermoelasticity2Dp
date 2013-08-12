@@ -18,9 +18,35 @@ class Constant2D : public Functor2D
         tFloat c;
 
         Constant2D(tFloat constant){ c = constant;}
-        tFloat operator()(tFloat x, tFloat y)
+        tFloat operator()(tFloat, tFloat)
         {
             return c;
+        }
+};
+
+class Sine : public Functor2D
+{
+    public:
+        tFloat a, b, c;
+
+        Sine(tFloat _a, tFloat _b, tFloat _c):a(_a), b(_b), c(_c){}
+
+        tFloat operator()(tFloat x, tFloat y)
+        {
+            return a*sinq(b*x+c);
+        }
+};
+
+class SFAS : public Functor2D
+{
+    public:
+        tFloat a, b;
+
+        SFAS(tFloat lx, tFloat ly):a(lx), b(ly){}
+
+        tFloat operator()(tFloat x, tFloat y)
+        {
+            return sinq(M_PIq *x/a)*sinhq(M_PIq*y/a)/sinhq(M_PIq*b/a);
         }
 };
 

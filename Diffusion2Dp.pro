@@ -1,7 +1,13 @@
 TEMPLATE = app
 CONFIG += console
-CONFIG -= app_bundle
+#CONFIG -= app_bundle
 #CONFIG -= qt
+
+QT       += core gui opengl
+QT += widgets
+
+QMAKE_CXXFLAGS += -fopenmp
+QMAKE_LFLAGS *= -fopenmp
 
 LIBS += -lquadmath
 
@@ -12,7 +18,8 @@ SOURCES += main.cpp \
     functor2d.cpp \
     boundary2d.cpp \
     data.cpp \
-    gaussseidel.cpp
+    gaussseidel.cpp \
+    graphics.cpp
 
 HEADERS += \
     node2d.h \
@@ -21,7 +28,8 @@ HEADERS += \
     functor2d.h \
     boundary2d.h \
     data.h \
-    gaussseidel.h
+    gaussseidel.h \
+    graphics.h
 
 FORMS +=
 

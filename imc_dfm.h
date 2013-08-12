@@ -23,7 +23,7 @@ typedef double tFloat; // Tipo Ponto flutuante com precisão Dupla (64 bits)
 
 typedef long int tInteger; // Tipo Inteiro (64 bits)
 
-#define C_FLOAT(x) static_cast<tFloat>(x)
+#define TOFLOAT(x) static_cast<tFloat>(x)
 
 #ifdef QUAD_PRECISION
 #define OUT_FLOAT_PRECISION 33 // Largura do campo de impressão
@@ -36,6 +36,11 @@ typedef long int tInteger; // Tipo Inteiro (64 bits)
 #define OUT_FLOAT_WIDTH (OUT_FLOAT_PRECISION+10)
 #define OUT_TXT 10
 
+#define MANAGE_EXCEPTIONS try {
+#define END_EXCEPTIONS     }catch(std::string str){std::cout<<str;}
+
+
+#define QtoD(value) static_cast<double>(value)
 
 std::string print(tFloat value);
 

@@ -16,4 +16,14 @@ class Diffusion2DData
             heatSource = new Constant2D(0.0);
         }
 };
+
+
+enum DirectionType{
+    South,
+    North,
+    East,
+    West
+};
+
+
 #endif // DATA_H
