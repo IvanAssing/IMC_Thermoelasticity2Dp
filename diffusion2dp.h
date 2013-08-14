@@ -30,6 +30,7 @@ class Diffusion2Dp
 
         void plotX(tInteger p, Functor2D &analyticalSolution);
         void plotY(tInteger p, Functor2D &analyticalSolution);
+        void plot(Functor2D &analyticalSolution);
 };
 
 #endif // DIFFUSION2DP_H

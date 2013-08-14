@@ -78,7 +78,7 @@ void GaussSeidel::solver()
         }
         L[nit] = sqrtq(residual);
 
-        //std::cout<<"\n"<<it<<"\t"<<print(L[it]);
+        std::cout<<"\n"<<nit<<"\t"<<print(L[nit]);
 
     }while(L[nit] > itol && nit++ < imax);
 }
@@ -91,7 +91,7 @@ void GaussSeidel::plotIterationLog()
 
     // Solução numérica
     std::ofstream file1(dat1_filename.c_str());
-    for(tInteger i=1; i<nit; i++)
+    for(tInteger i=0; i<nit; i++)
         file1<<i<<"\t"<<QtoD(L[i]/L[0])<<std::endl;
     file1.close();
 
@@ -104,7 +104,7 @@ void GaussSeidel::plotIterationLog()
              "set logscale y\n"
              "set format y \"10^{%L}\" \n"
              "set lmargin 10 \n"
-             "set title \"DESEMPENHO DE ITERAÇÃO \\n itmax = "<<imax<<"  itol = "<<QtoD(itol)<<"  nit = "<<nit<<"\"\n"
+             "set title \"DESEMPENHO DE ITERAÇÃO \\n itmax = "<<imax<<"  itol = "<<QtoD(itol)<<"  nit = "<<nit-1<<"\"\n"
              "set ylabel \"L^{n}/L^{0}\" \n"
              "set xlabel 'Número de iterações'\n"
 

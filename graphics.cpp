@@ -167,7 +167,7 @@ void Graphics::paintGL()
 
     glPushMatrix();
     glTranslated(xmin + 0.5*(xmax-xmin), ymin + 0.15*(ymax-ymin), 0.0);
-    glScaled(0.7*(ymax-ymin), 0.7*(ymax-ymin), 1.0);
+    //glScaled(0.7*(ymax-ymin), 0.7*(ymax-ymin), 1.0);
 
     glColor4d(0.0, 0.0, 0.0, 1.0);
     glBegin(GL_QUADS);

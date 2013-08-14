@@ -107,7 +107,7 @@ void Diffusion2Dp::solver(tInteger iterationMax, tFloat iterationTolerance, bool
     for(tInteger j=0; j<ny-1; j++)
         for(tInteger i=0; i<nx-1; i++){
             p = position(i,j);
-            Tm += T[p] + T[direction(p, West)] + T[direction(p, North)] + T[direction(direction(p, North), West)];
+            Tm += T[p] + T[direction(p, East)] + T[direction(p, North)] + T[direction(direction(p, North), East)];
         }
     Tm *= hx*hy/(4.0q*lx*ly);
 
@@ -137,13 +137,13 @@ tInteger Diffusion2Dp::direction(tInteger position, DirectionType dir)
         else
             return position-nx;
         break;
-    case East:
+    case West:
         if(position-1 < 0)
             throw std::string("error: invalid index");
         else
             return position-1;
         break;
-    case West:
+    case East:
         if(position+1 > nx*ny)
             throw std::string("error: invalid index");
         else
@@ -234,7 +234,7 @@ void Diffusion2Dp::plotY(tInteger p, Functor2D &analyticalSolution)
              "set grid\n"
              "set title \"DIFUSÃO DE CALOR BIDIMENSIONAL EM REGIME PERMANENTE\\nResolução com MDF / Aproximação com CDS-2\"\n"
              "set xlabel 'y'\n"
-             "set ylabel 'T( "<<QtoD(p*hx)<<", x)'\n"
+             "set ylabel 'T( "<<QtoD(p*hx)<<", y)'\n"
              "plot '" <<dat2_filename<<"' t\"Solução Analítica\" with lines lt 2 lc 2 lw 2, "
              "'" <<dat1_filename<<"' t\"Solução Numérica\" with points lt 2 lc 1 pt 13 lw 5";
     file3.close();
@@ -245,3 +245,55 @@ void Diffusion2Dp::plotY(tInteger p, Functor2D &analyticalSolution)
     std::system(cmd1.c_str());
     std::system(cmd2.c_str());
 }
+
+void Diffusion2Dp::plot(Functor2D &analyticalSolution)
+{
+    const std::string cmd_filename = "plotconfig.gnu";
+    const std::string pic_filename = "plot.png";
+    const std::string dat1_filename = "data1.txt";
+    const std::string dat2_filename = "data2.txt";
+
+    // Solução numérica
+    std::ofstream file1(dat1_filename.c_str());
+    for(tInteger i=0; i<nx*ny; i++)
+        file1<<QtoD(nodes[i].x)<<"\t"<<QtoD(nodes[i].y)<<"\t"<<QtoD(T[i])<<std::endl;
+    file1.close();
+
+        // Solução Analítica
+        std::ofstream file2(dat2_filename.c_str());
+        int f = 10;
+        tFloat hy_10 = ly/(f*ny-1); // Aumenta o número de pontos em f X
+        tFloat hx_10 = lx/(f*nx-1);
+        for(tInteger j=0; j<f*nx; j++)
+        for(tInteger i=0; i<f*ny; i++)
+        {
+            tFloat yp = i*hy_10;
+            tFloat xp = j*hx_10;
+            file2<<QtoD(xp)<<"\t"<<QtoD(yp)<<"\t"<<QtoD(analyticalSolution(xp, yp))<<std::endl;
+        }
+        file2.close();
+
+    std::ofstream file3(cmd_filename.c_str());
+    file3 <<
+             "set terminal pngcairo enhanced font \"arial,12\" size 1600, 1000 \n"
+             "#set terminal wxt font \"arial,12\" size 1600, 1000 \n"
+             "set output '" << pic_filename <<"'\n"
+             "set key inside right top vertical Right noreverse enhanced autotitles box linetype -1 linewidth 1.000\n"
+             "set grid\n"
+             "set title \"DIFUSÃO DE CALOR BIDIMENSIONAL EM REGIME PERMANENTE\\nResolução com MDF / Aproximação com CDS-2\"\n"
+             "set lmargin 8\n"
+             "set xlabel 'x'\n"
+             "set ylabel 'y'\n"
+             "set zlabel 'T( x, y)'\n"
+             "splot '" <<dat2_filename<<"' t\"Solução Analítica\" with points lt 2 lc 0 lw 2 pt 0, "
+             " '" <<dat1_filename<<"' t\"Solução Numérica\" with points lt 2 lc 1 pt 13 lw 5\n"
+             "#pause -1";
+    file3.close();
+
+    const std::string cmd1 = "gnuplot " + cmd_filename; // Gráfico com GNUPLOT
+    const std::string cmd2 = "eog " + pic_filename; // Visualizador de imagem
+
+    std::system(cmd1.c_str());
+    std::system(cmd2.c_str());
+}
+
