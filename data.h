@@ -12,8 +12,21 @@ class Diffusion2DData
 
 
         Diffusion2DData(){
-            k = 0.0;
-            heatSource = new Constant2D(0.0);
+            k = 0.0q;
+            heatSource = new Constant2D(0.0q);
+        }
+};
+
+class Thermoelasticity2DData
+{
+    public:
+        tFloat k, mi, alpha;
+        Functor2D *heatSource;
+
+
+        Thermoelasticity2DData(){
+            k = mi = alpha = 0.0q;
+            heatSource = new Constant2D(0.0q);
         }
 };
 

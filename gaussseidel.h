@@ -31,6 +31,8 @@ class GaussSeidel
         void operator()(tInteger equation, tInteger index, tFloat value);
         void operator()(tInteger equation, tFloat b);
 
+        tFloat residual(tFloat *x);
+
         void solver();
 
         void plotIterationLog();

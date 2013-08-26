@@ -83,6 +83,22 @@ void GaussSeidel::solver()
     }while(L[nit] > itol && nit++ < imax);
 }
 
+
+tFloat GaussSeidel::residual(tFloat *_x)
+{
+    // Residuo
+    tFloat residual = 0.0q;
+    for(tInteger i = 0; i<neqmax; i++){
+        tFloat sum = b[i]-ax[i]*_x[i];
+        for(tInteger j=0; j<neIndex[i]; j++)
+            sum -= A[i][j]*_x[AIndex[i][j]];
+        residual += sum*sum;
+    }
+
+    return sqrtq(residual);
+}
+
+
 void GaussSeidel::plotIterationLog()
 {
     const std::string cmd_filename = "plotconfig_it.gnu";

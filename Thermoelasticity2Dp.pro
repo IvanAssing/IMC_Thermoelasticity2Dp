@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     boundary2d.cpp \
     data.cpp \
     gaussseidel.cpp \
-    graphics.cpp
+    graphics.cpp \
+    thermoelasticity2dp.cpp
 
 HEADERS += \
     node2d.h \
@@ -29,7 +30,8 @@ HEADERS += \
     boundary2d.h \
     data.h \
     gaussseidel.h \
-    graphics.h
+    graphics.h \
+    thermoelasticity2dp.h
 
 FORMS +=
 
