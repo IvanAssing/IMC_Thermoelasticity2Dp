@@ -32,8 +32,10 @@ class Thermoelasticity2Dp
         tInteger direction(tInteger position, DirectionType dir);
         tInteger position(tInteger i, tInteger j);
 
-        void solver(tInteger iterationMax = 1000, tFloat iterationTolerance = 1.0e-28q, tInteger iIterationMax = 10, bool plotlog = false); // Discretização + solver do sistema linear
+        void solver(tInteger iterationMax = 1000, tFloat iterationTolerance = 1.0e-28q, tInteger internalIterationMax = 10, bool plotlog = false); // Discretização + solver do sistema linear
 
+        void printX(tInteger p);
+        void printY(tInteger p);
 };
 
 #endif // THERMOELASTICITY2DP_H

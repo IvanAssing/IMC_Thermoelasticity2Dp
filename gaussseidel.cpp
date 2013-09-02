@@ -55,9 +55,10 @@ void GaussSeidel::operator()(tInteger i, tFloat _b)
         b[i] = _b;
 }
 
-void GaussSeidel::solver()
+void GaussSeidel::solver(bool showlog)
 {
-    tFloat sum, residual;
+    tFloat sum;
+    nit = 0;
 
     do{
         // Solver
@@ -69,16 +70,9 @@ void GaussSeidel::solver()
         }
 
         // Residuo
-        residual = 0.0q;
-        for(tInteger i = 0; i<neqmax; i++){
-            sum = b[i]-ax[i]*x[i];
-            for(tInteger j=0; j<neIndex[i]; j++)
-                sum -= A[i][j]*x[AIndex[i][j]];
-            residual += sum*sum;
-        }
-        L[nit] = sqrtq(residual);
+        L[nit] = this->residual(x);
 
-        std::cout<<"\n"<<nit<<"\t"<<print(L[nit]);
+        if(showlog) std::cout<<"\n L["<<nit<<"] = "<<print(L[nit]);
 
     }while(L[nit] > itol && nit++ < imax);
 }
@@ -87,15 +81,15 @@ void GaussSeidel::solver()
 tFloat GaussSeidel::residual(tFloat *_x)
 {
     // Residuo
-    tFloat residual = 0.0q;
+    tFloat sum, res = 0.0q;
     for(tInteger i = 0; i<neqmax; i++){
-        tFloat sum = b[i]-ax[i]*_x[i];
+        sum = b[i]-ax[i]*_x[i];
         for(tInteger j=0; j<neIndex[i]; j++)
             sum -= A[i][j]*_x[AIndex[i][j]];
-        residual += sum*sum;
+        res += sum*sum;
     }
 
-    return sqrtq(residual);
+    return sqrtq(res);
 }
 
 

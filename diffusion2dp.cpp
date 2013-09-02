@@ -93,7 +93,7 @@ void Diffusion2Dp::solver(tInteger iterationMax, tFloat iterationTolerance, bool
             sys(p, -2.0q*hx*ccW->bcValue->operator ()(nodes[p].x, nodes[p].y)/data->k);
         }
 
-    sys.solver();
+    sys.solver(true);
 
     Tm = 0.0q;
     int p;

@@ -8,6 +8,7 @@
 #include <QCursor>
 
 #include "diffusion2dp.h"
+#include "thermoelasticity2dp.h"
 
 class Graphics : public QGLWidget
 {
@@ -18,7 +19,7 @@ class Graphics : public QGLWidget
         double xmax, xmin, ymax, ymin, panX, panY;
         bool isMousePress;
 
-        Diffusion2Dp *mesh;
+        Thermoelasticity2Dp *mesh;
         tFloat *X;
 
         void drawLegend(double T0, double T1, double T2, double T3, double T4);

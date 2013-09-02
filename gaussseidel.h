@@ -33,7 +33,7 @@ class GaussSeidel
 
         tFloat residual(tFloat *x);
 
-        void solver();
+        void solver(bool showlog = false);
 
         void plotIterationLog();
 };
