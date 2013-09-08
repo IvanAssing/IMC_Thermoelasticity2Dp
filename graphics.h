@@ -14,10 +14,11 @@ class Graphics : public QGLWidget
 {
         Q_OBJECT
     public:
-        explicit Graphics(QWidget *parent = 0);
+        explicit Graphics(Thermoelasticity2Dp *mesh, tFloat *X, QString str, int factor = 0, QWidget *parent = 0);
 
         double xmax, xmin, ymax, ymin, panX, panY;
         bool isMousePress;
+        int gradFactor;
 
         Thermoelasticity2Dp *mesh;
         tFloat *X;

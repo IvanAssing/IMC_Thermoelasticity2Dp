@@ -7,10 +7,15 @@
 #include <QImageWriter>
 #include <QDateTime>
 
-Graphics::Graphics(QWidget *parent) :
+Graphics::Graphics(Thermoelasticity2Dp *_mesh, tFloat *_X, QString _str, int factor, QWidget *parent) :
     QGLWidget(parent)
 {
     this->showMaximized();
+
+    mesh = _mesh;
+    X = _X;
+    this->setWindowTitle(_str);
+    gradFactor = factor;
 
     xmin = -1.2;
     ymin = -1.2;
@@ -157,6 +162,7 @@ void Graphics::mouseMoveEvent(QMouseEvent *event)
 }
 
 void Graphics::paintGL()
+
 {
     //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -165,42 +171,131 @@ void Graphics::paintGL()
     glLoadIdentity();
 
 
-    glPushMatrix();
-    glTranslated(xmin + 0.5*(xmax-xmin), ymin + 0.15*(ymax-ymin), 0.0);
+    //glPushMatrix();
+    //glTranslated(xmin + 0.1*(xmax-xmin), ymin + 0.15*(ymax-ymin), 0.0);
     //glScaled(0.7*(ymax-ymin), 0.7*(ymax-ymin), 1.0);
 
     glColor4d(0.0, 0.0, 0.0, 1.0);
     glBegin(GL_QUADS);
     {
         glVertex3d(0.0, 0.0, 0.0);
-        glVertex3d(mesh->lx, 0.0, 0.0);
-        glVertex3d(mesh->lx, mesh->ly, 0.0);
-        glVertex3d(0.0, mesh->ly, 0.0);
+        glVertex3d(QtoD(mesh->lx), 0.0, 0.0);
+        glVertex3d(QtoD(mesh->lx), QtoD(mesh->ly), 0.0);
+        glVertex3d(0.0, QtoD(mesh->ly), 0.0);
     }
     glEnd();
 
-    // Desenhar os Nós
-    glPointSize(5.0f);
-    glColor4d(1.0, 1.0, 1.0, 1.0);
-    glBegin(GL_POINTS);
-    for(int i=0; i<mesh->nx*mesh->ny; i++){
-        glVertex2d(QtoD(mesh->nodes[i].x), QtoD(mesh->nodes[i].y));
-    }
-    glEnd();
+    if(gradFactor == 0)
+    {
+        // Desenhar os Nós
+        glPointSize(5.0f);
+        glColor4d(1.0, 1.0, 1.0, 1.0);
+        glBegin(GL_POINTS);
+        for(int i=0; i<mesh->nx*mesh->ny; i++){
+            glVertex2d(QtoD(mesh->nodes[i].x), QtoD(mesh->nodes[i].y));
+        }
+        glEnd();
 
-    // Desenhar os Elementos
-    glColor4d(1.0, 1.0, 1.0, 1.0);
+        // Desenhar os Elementos
+        glColor4d(1.0, 1.0, 1.0, 1.0);
 
-    glBegin(GL_LINES);
-    for(int i=0; i<mesh->nx; i++){
-        glVertex2d(QtoD(i*mesh->hx), QtoD(0.0));
-        glVertex2d(QtoD(i*mesh->hx), QtoD(mesh->ly));
+        glBegin(GL_LINES);
+        for(int i=0; i<mesh->nx; i++){
+            glVertex2d(QtoD(i*mesh->hx), QtoD(0.0));
+            glVertex2d(QtoD(i*mesh->hx), QtoD(mesh->ly));
+        }
+        for(int i=0; i<mesh->ny; i++){
+            glVertex2d(QtoD(0.0), QtoD(i*mesh->hy));
+            glVertex2d(QtoD(mesh->lx), QtoD(i*mesh->hy));
+        }
+        glEnd();
+    }else
+    {
+        // Desenhar os Nós
+        glPointSize(5.0f);
+        glColor4d(1.0, 1.0, 1.0, 1.0);
+//        glBegin(GL_POINTS);
+//        for(int i=0; i<mesh->nx*mesh->ny; i++){
+//            glVertex2d(QtoD(mesh->nodes[i].x + mesh->U[i]), QtoD(mesh->nodes[i].y + mesh->V[i]));
+//        }
+//        glEnd();
+
+        tFloat fat = gradFactor/1000.q;
+        glLineWidth(3.0f);
+        glBegin(GL_LINES);
+        for(int i=0; i<mesh->nx*mesh->ny; i++){
+            glVertex2d(QtoD(mesh->nodes[i].x), QtoD(mesh->nodes[i].y));
+            glVertex2d(QtoD(mesh->nodes[i].x + fat*mesh->U[i]), QtoD(mesh->nodes[i].y + fat*mesh->V[i]));
+
+            double r = 0.2*QtoD(sqrtq(fat*mesh->U[i]*fat*mesh->U[i] + fat*mesh->V[i]*fat*mesh->V[i]));
+            double betha = atan2(QtoD(fat*mesh->V[i]), QtoD(fat*mesh->U[i]));
+
+            glVertex2d(QtoD(mesh->nodes[i].x + fat*mesh->U[i]), QtoD(mesh->nodes[i].y + fat*mesh->V[i]));
+            glVertex2d(QtoD(mesh->nodes[i].x + fat*mesh->U[i]) + r*cos(betha+5.*M_PI/6.), QtoD(mesh->nodes[i].y + fat*mesh->V[i]) + r*sin(betha+5.*M_PI/6.));
+
+            glVertex2d(QtoD(mesh->nodes[i].x + fat*mesh->U[i]), QtoD(mesh->nodes[i].y + fat*mesh->V[i]));
+            glVertex2d(QtoD(mesh->nodes[i].x + fat*mesh->U[i]) + r*cos(betha-5.*M_PI/6.), QtoD(mesh->nodes[i].y + fat*mesh->V[i]) + r*sin(betha-5.*M_PI/6.));
+
+        }
+        glEnd();
+
+        // Desenhar os Elementos
+//        glColor4d(1.0, 1.0, 1.0, 1.0);
+
+//        glBegin(GL_LINES);
+//        for(int i=0; i<mesh->nx; i++){
+//            glVertex2d(QtoD(i*mesh->hx), QtoD(0.0));
+//            glVertex2d(QtoD(i*mesh->hx), QtoD(mesh->ly));
+//        }
+//        for(int i=0; i<mesh->ny; i++){
+//            glVertex2d(QtoD(0.0), QtoD(i*mesh->hy));
+//            glVertex2d(QtoD(mesh->lx), QtoD(i*mesh->hy));
+//        }
+//        glEnd();
     }
-    for(int i=0; i<mesh->ny; i++){
-        glVertex2d(QtoD(0.0), QtoD(i*mesh->hy));
-        glVertex2d(QtoD(mesh->lx), QtoD(i*mesh->hy));
-    }
-    glEnd();
+
+
+//    int nxi = mesh->nx;
+//    int nyi = mesh->ny;
+
+//    tFloat xi[2*nxi*nyi], yi[2*nxi*nyi], ti[2*nxi*nyi];
+
+//    for(int j = 0; j<nyi; j++)
+//    for(int i = 0; i<nxi; i++)
+//    {
+//        xi[2*(i+j*nxi)] = mesh->nodes[i+j*nxi].x;
+//        yi[2*(i+j*nxi)] = mesh->nodes[i+j*nxi].y;
+//        ti[2*(i+j*nxi)] = X[i+j*nxi];
+//    }
+
+//    for(int j = 0; j<nyi; j++)
+//    for(int i = 0; i<nxi-1; i++)
+//    {
+//        xi[2*(i+j*nxi)+1] = 0.5*(mesh->nodes[i+j*nxi].x + mesh->nodes[i+j*nxi+1].x);
+//        yi[2*(i+j*nxi)+1] = mesh->nodes[i+j*nxi].y;
+//        ti[2*(i+j*nxi)+1] = 0.5*(X[i+j*nxi] + X[i+j*nxi+1]);
+//    }
+
+//    for(int j = 0; j<nyi-1; j++)
+//    for(int i = 0; i<nxi; i++)
+//    {
+//        xi[2*(i+(j+1)*nxi)] = mesh->nodes[i+j*nxi].x;
+//        yi[2*(i+(j+1)*nxi)] = 0.5*(mesh->nodes[i+j*nxi].y + mesh->nodes[i+(j+1)*nxi].y);
+//        ti[2*(i+(j+1)*nxi)] = 0.5*(X[i+j*nxi] + X[i+(j+1)*nxi]);
+//    }
+
+//    for(int j = 0; j<nyi-1; j++)
+//    for(int i = 0; i<nxi-1; i++)
+//    {
+//        xi[2*(i+(j+1)*nxi)+1] = 0.5*(mesh->nodes[i+j*nxi].x + mesh->nodes[i+j*nxi+1].x);
+//        yi[2*(i+(j+1)*nxi)+1] = 0.5*(mesh->nodes[i+j*nxi].y + mesh->nodes[i+(j+1)*nxi].y);
+//        ti[2*(i+(j+1)*nxi)+1] = 0.25*(X[i+j*nxi] + X[i+(j+1)*nxi] + X[i+j*nxi+1] + X[i+(j+1)*nxi+1]);
+//    }
+
+//    for(int i=0; i<2*nxi*(nyi+1); i++)
+//        std::cout<<"\n"<<i<<"\t"<<QtoD(xi[i])<<"\t"<<QtoD(yi[i])<<"\t"<<QtoD(ti[i]);
+
+
 
     // Desenha os resultados
     double T0, T1, T2, T3, T4, Tn, R, G, B;
@@ -235,10 +330,39 @@ void Graphics::paintGL()
             i+=1;
     }
 
-    glPopMatrix();
-    glLoadIdentity();
+
+
+//    for(int i=0; i<nxi*(nyi-1); i++){
+
+//        k[0] = i;
+//        k[1] = i+1;
+//        k[2] = i+nxi+1;
+//        k[3] = i+nxi;
+
+//        //i += 3;
+
+//        glBegin(GL_QUADS);
+//        for(int p = 0; p<4; p++){
+//            Tn = QtoD(ti[k[p]]);
+//            R = Tn<T2?  0. : (Tn>T3? 1. : (Tn-T2)/(T3-T2));
+//            B = Tn>T2?  0. : (Tn<T1? 1. : (T2-Tn)/(T2-T1));
+//            G = Tn<T1? (Tn-T0)/(T1-T0) : Tn>T3 ? (T4-Tn)/(T4-T3) : 1.;
+//            glColor4d(R,G,B,0.8);
+
+//            glVertex2d(QtoD(xi[k[p]]), QtoD(yi[k[p]]));
+//        }
+//        glEnd();
+
+//        if(i+1 && !((i+2)%nxi))
+//            i+=1;
+//    }
+
+    //glPopMatrix();
+    //glLoadIdentity();
     // Desenha legenda (escala de cores)
     this->drawLegend(T0, T1, T2, T3, T4);
+    //    glPopMatrix();
+    //    glLoadIdentity();
 
 }
 
@@ -257,9 +381,13 @@ void Graphics::getMaxMin(tFloat *vector, int size, double &max, double &min)
 
 void Graphics::drawLegend(double T0, double T1, double T2, double T3, double T4)
 {
-    glPushMatrix();
-    glTranslated(xmin + 0.9*(xmax-xmin), ymin + 0.15*(ymax-ymin), 0.0);
-    glScaled(0.2*(xmax-xmin), 0.7*(ymax-ymin), 1.0);
+    //glPushMatrix();
+    //glTranslated(xmin + 0.9*(xmax-xmin), ymin + 0.15*(ymax-ymin), 0.0);
+
+    glTranslated(1.2, 0.0, 0.0);
+
+    //glPushMatrix();
+    //glScaled(0.2*(xmax-xmin), 0.7*(ymax-ymin), 1.0);
 
     int pn = 10;
 
@@ -270,7 +398,9 @@ void Graphics::drawLegend(double T0, double T1, double T2, double T3, double T4)
     QString st4 = QString("%1").arg(T4, 0, 'E', pn);
 
     glColor3f(0.,0.,0.);
-    QFont font10("Ubuntu", 13, QFont::Cursive);
+    QFont font10("Ubuntu", 12, QFont::Cursive);
+
+
 
     this->renderText(0.f,0.00f,0.f,st0,font10);
     this->renderText(0.f,0.245f,0.f,st1,font10);
@@ -314,6 +444,6 @@ void Graphics::drawLegend(double T0, double T1, double T2, double T3, double T4)
 
         glEnd();
     }
-    glPopMatrix();
+    //glPopMatrix();
 }
 

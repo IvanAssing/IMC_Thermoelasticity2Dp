@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     data.k = 1.0q;
     data.alpha = 0.1q;
     data.mi = 0.3q;
+    data.E = 1.0q;
 
 
 
@@ -48,8 +49,8 @@ int main(int argc, char *argv[])
 
     tFloat lx = 1.0q;
     tFloat ly = 1.0q;
-    tInteger nx = 11;
-    tInteger ny = 11;
+    tInteger nx = 41;
+    tInteger ny = 41;
 
     tFloat TmAS = 2.0q*lx * (coshq(M_PIq*ly/lx) - 1.0q) / (M_PIq*M_PIq*ly*sinhq(M_PIq*ly/lx));
     //Diffusion2Dp mesh(lx, ly, nx, ny, &data, &south, &north, &east, &west);
@@ -73,28 +74,72 @@ int main(int argc, char *argv[])
     for(int i=0; i<mesh.nx*mesh.ny; i++)
         erro[i] = fabsq(as(mesh.nodes[i].x, mesh.nodes[i].y)-mesh.T[i]);
 
-    // Gerar mapa de cores
-    Graphics w1/*, w2*/;
-    w1.mesh = &mesh;
-    w1.X = mesh.T;
-    w1.setWindowTitle(QString("Temperatura"));
-//    w2.mesh = &mesh;
-//    w2.X = erro;
-    w1.show();
-    //w2.show();
+    //    // Gerar mapa de cores
+    //    Graphics w1/*, w2*/;
+    //    w1.mesh = &mesh;
+    //    w1.X = mesh.T;
+    //    w1.setWindowTitle(QString("Temperatura"));
+    ////    w2.mesh = &mesh;
+    ////    w2.X = erro;
+    //    w1.show();
+    //    //w2.show();
 
-    Graphics u, v;
+        //Graphics u, v, ex, ey, exy;
 
-    u.mesh = &mesh;
-    u.X = mesh.U;
-    u.setWindowTitle(QString("Deslocamentos na Direção "));
+    //    u.mesh = &mesh;
+    //    u.X = mesh.U;
+    //    u.setWindowTitle(QString("Deslocamentos na direção X"));
 
-    v.mesh = &mesh;
-    v.X = mesh.V;
-    v.setWindowTitle(QString("Deslocamentos na Direção Y"));
+    //    v.mesh = &mesh;
+    //    v.X = mesh.V;
+    //    v.setWindowTitle(QString("Deslocamentos na direção Y"));
 
-    u.show();
-    v.show();
+    //    u.show();
+    //    v.show();
+
+
+//    ex.mesh = &mesh;
+//    ex.X = mesh.ex;
+//    ex.setWindowTitle(QString("Deformação da direção X"));
+//    ex.show();
+
+
+//    Graphics w_t(&mesh, mesh.T, QString("Temperatura"), 0);
+
+//    w_t.show();
+
+//    Graphics w_u(&mesh, mesh.U, QString("Deslocamentos na direção X"), 0);
+
+//    w_u.show();
+
+//    Graphics w_v(&mesh, mesh.V, QString("Deslocamentos na direção Y"), 0);
+
+//    w_v.show();
+
+
+//    Graphics w_ex(&mesh, mesh.ex, QString("Deformação na direção X"), 0);
+
+//    w_ex.show();
+
+//    Graphics w_ey(&mesh, mesh.ey, QString("Deformação na direção Y"), 0);
+
+//    w_ey.show();
+
+//    Graphics w_exy(&mesh, mesh.exy, QString("Distorção XY"), 0);
+
+//    w_exy.show();
+
+    Graphics w_sx(&mesh, mesh.sx, QString("Tensão normal na direção X"), 0);
+
+    w_sx.show();
+
+    Graphics w_sy(&mesh, mesh.sy, QString("Tensão normal na direção Y"), 0);
+
+    w_sy.show();
+
+    Graphics w_sxy(&mesh, mesh.sxy, QString("Tensão de cisalhamento XY"), 0);
+
+    w_sxy.show();
 
     std::cout<<"\n\nX = 0.5";
     mesh.printX(ny/2);
@@ -102,18 +147,12 @@ int main(int argc, char *argv[])
     std::cout<<"\n\nY = 0.5";
     mesh.printY(nx/2);
 
+    mesh.plotX(ny/2);
+    mesh.plotY(nx/2);
+
+    mesh.plotIterationLog();
 
 
-//    // Resultados númericos
-//    std::cout<<"\n\nT("<<QtoD(mesh.nodes[mesh.position(nx/2, 9*(ny/10))].x)<<", "<<QtoD(mesh.nodes[mesh.position(nx/2, 9*(ny/10))].y)<<"):";
-//    std::cout<<std::setw(15)<<std::right<<"\nNumérica: "<<print(mesh.T[mesh.position(nx/2, 9*(ny/10))]);
-//    std::cout<<std::setw(15)<<std::right<<"\nAnalítica: "<<print(as(0.5q, 0.9q));
-//    std::cout<<std::setw(15)<<std::right<<"\nErro: "<<print(as(0.5q, 0.9q) - mesh.T[mesh.position(nx/2, 9*(ny/10))])<<std::endl;
-
-    std::cout<<"\n\nTemperatura Média: "<<std::setfill(' ');
-    std::cout<<std::setw(15)<<std::right<<"\nNumérica: "<<print(mesh.thermo->Tm);
-    std::cout<<std::setw(15)<<std::right<<"\nAnalítica: "<<print(TmAS);
-    std::cout<<std::setw(15)<<std::right<<"\nErro: "<<print(TmAS - mesh.thermo->Tm)<<std::endl;
 
     //END_EXCEPTIONS
 

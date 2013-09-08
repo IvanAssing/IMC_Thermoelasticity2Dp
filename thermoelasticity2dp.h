@@ -18,13 +18,17 @@ class Thermoelasticity2Dp
         tFloat lx, ly, hx, hy; // Tamanho de malha
         Boundary2D *ccT, *ccU, *ccV; // Condições de contorno
 
-        tInteger nit;
+        tInteger nit, imax; // Número de iterações
+        tFloat itol;
 
         tFloat *Lu, *Lv; // Resíduos
 
         tFloat *T, *U, *V; // Vetores solução
 
-        Diffusion2Dp *thermo;
+        tFloat *ex, *ey, *exy; // Deformações
+        tFloat *sx, *sy, *sxy; // Tensões
+
+        Diffusion2Dp *thermo; // Solver do problema térmico
 
         Thermoelasticity2Dp(tFloat lengthX, tFloat lengthY, tInteger nx, tInteger ny, Thermoelasticity2DData *data,
                             Boundary2D *ccT, Boundary2D *ccU, Boundary2D *ccV);
@@ -36,6 +40,10 @@ class Thermoelasticity2Dp
 
         void printX(tInteger p);
         void printY(tInteger p);
+        void plotX(tInteger p);
+        void plotY(tInteger p);
+
+        void plotIterationLog();
 };
 
 #endif // THERMOELASTICITY2DP_H
