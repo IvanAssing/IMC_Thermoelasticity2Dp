@@ -19,7 +19,7 @@ class Thermoelasticity2Dp
         Boundary2D *ccT, *ccU, *ccV; // Condições de contorno
 
         tInteger nit, imax; // Número de iterações
-        tFloat itol;
+        tFloat itol; // Tolerância
 
         tFloat *Lu, *Lv; // Resíduos
 
@@ -38,10 +38,17 @@ class Thermoelasticity2Dp
 
         void solver(tInteger iterationMax = 1000, tFloat iterationTolerance = 1.0e-28q, tInteger internalIterationMax = 10, bool plotlog = false); // Discretização + solver do sistema linear
 
-        void printX(tInteger p);
-        void printY(tInteger p);
         void plotX(tInteger p);
         void plotY(tInteger p);
+
+        void printX(tInteger p);
+        void printY(tInteger p);
+
+        void printXStrain(tInteger p);
+        void printYStrain(tInteger p);
+
+        void printXStress(tInteger p);
+        void printYStress(tInteger p);
 
         void plotIterationLog();
 };

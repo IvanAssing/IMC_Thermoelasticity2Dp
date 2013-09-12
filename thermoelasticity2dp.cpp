@@ -345,7 +345,7 @@ void Thermoelasticity2Dp::printX(tInteger p)
 {
 
     for(tInteger i=0; i<nx; i++)
-        std::cout<<std::endl<<print(nodes[p*nx+i].x)<<"\t"<<print(U[p*nx+i])<<"\t"<<print(V[p*nx+i])<<"\t"<<print(T[p*nx+i]);
+        std::cout<<std::endl<<p*nx+i<<"\t"<<print2(nodes[p*nx+i].x)<<"\t"<<print2(nodes[p*nx+i].y)<<"\t"<<print(U[p*nx+i])<<"\t"<<print(V[p*nx+i])<<"\t"<<print(T[p*nx+i]);
 
 
 }
@@ -354,7 +354,7 @@ void Thermoelasticity2Dp::printY(tInteger p)
 {
 
     for(tInteger i=0; i<ny; i++)
-        std::cout<<std::endl<<print(nodes[p+nx*i].y)<<"\t"<<print(U[p+nx*i])<<"\t"<<print(V[p+nx*i])<<"\t"<<print(T[p+nx*i]);
+        std::cout<<std::endl<<p+nx*i<<"\t"<<print2(nodes[p+nx*i].x)<<"\t"<<print2(nodes[p+nx*i].y)<<"\t"<<print(U[p+nx*i])<<"\t"<<print(V[p+nx*i])<<"\t"<<print(T[p+nx*i]);
 }
 
 
@@ -478,4 +478,43 @@ void Thermoelasticity2Dp::plotIterationLog()
     std::system(cmd1.c_str());
     std::system(cmd2.c_str());
 }
+
+
+void Thermoelasticity2Dp::printXStrain(tInteger p)
+{
+
+    for(tInteger i=0; i<nx; i++)
+        std::cout<<std::endl<<p*nx+i<<"\t"<<print2(nodes[p*nx+i].x)<<"\t"<<print2(nodes[p*nx+i].y)<<"\t"<<print(ex[p*nx+i])<<"\t"<<print(ey[p*nx+i])<<"\t"<<print(exy[p*nx+i]);
+
+
+
+}
+
+void Thermoelasticity2Dp::printYStrain(tInteger p)
+{
+
+    for(tInteger i=0; i<ny; i++)
+        std::cout<<std::endl<<p+nx*i<<"\t"<<print2(nodes[p+nx*i].x)<<"\t"<<print2(nodes[p+nx*i].y)<<"\t"<<print(ex[p+nx*i])<<"\t"<<print(ey[p+nx*i])<<"\t"<<print(exy[p+nx*i]);
+}
+
+
+
+void Thermoelasticity2Dp::printXStress(tInteger p)
+{
+
+    for(tInteger i=0; i<nx; i++)
+        std::cout<<std::endl<<p*nx+i<<"\t"<<print2(nodes[p*nx+i].x)<<"\t"<<print2(nodes[p*nx+i].y)<<"\t"<<print(sx[p*nx+i])<<"\t"<<print(sy[p*nx+i])<<"\t"<<print(sxy[p*nx+i]);
+
+
+
+}
+
+void Thermoelasticity2Dp::printYStress(tInteger p)
+{
+
+    for(tInteger i=0; i<ny; i++)
+        std::cout<<std::endl<<p+nx*i<<"\t"<<print2(nodes[p+nx*i].x)<<"\t"<<print2(nodes[p+nx*i].y)<<"\t"<<print(sx[p+nx*i])<<"\t"<<print(sy[p+nx*i])<<"\t"<<print(sxy[p+nx*i]);
+}
+
+
 

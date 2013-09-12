@@ -7,3 +7,10 @@ std::string print(tFloat value)
     return std::string(str);
 }
 
+std::string print2(tFloat value)
+{
+    char str[1000];
+    quadmath_snprintf(str, 1000, "%.3Qe",value);
+    return std::string(str);
+}
+

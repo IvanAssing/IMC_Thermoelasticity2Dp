@@ -164,16 +164,11 @@ void Graphics::mouseMoveEvent(QMouseEvent *event)
 void Graphics::paintGL()
 
 {
-    //glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-
-    //glPushMatrix();
-    //glTranslated(xmin + 0.1*(xmax-xmin), ymin + 0.15*(ymax-ymin), 0.0);
-    //glScaled(0.7*(ymax-ymin), 0.7*(ymax-ymin), 1.0);
 
     glColor4d(0.0, 0.0, 0.0, 1.0);
     glBegin(GL_QUADS);
@@ -188,7 +183,7 @@ void Graphics::paintGL()
     if(gradFactor == 0)
     {
         // Desenhar os Nós
-        glPointSize(5.0f);
+        glPointSize(3.0f);
         glColor4d(1.0, 1.0, 1.0, 1.0);
         glBegin(GL_POINTS);
         for(int i=0; i<mesh->nx*mesh->ny; i++){
@@ -214,11 +209,6 @@ void Graphics::paintGL()
         // Desenhar os Nós
         glPointSize(5.0f);
         glColor4d(1.0, 1.0, 1.0, 1.0);
-//        glBegin(GL_POINTS);
-//        for(int i=0; i<mesh->nx*mesh->ny; i++){
-//            glVertex2d(QtoD(mesh->nodes[i].x + mesh->U[i]), QtoD(mesh->nodes[i].y + mesh->V[i]));
-//        }
-//        glEnd();
 
         tFloat fat = gradFactor/1000.q;
         glLineWidth(3.0f);
@@ -238,63 +228,7 @@ void Graphics::paintGL()
 
         }
         glEnd();
-
-        // Desenhar os Elementos
-//        glColor4d(1.0, 1.0, 1.0, 1.0);
-
-//        glBegin(GL_LINES);
-//        for(int i=0; i<mesh->nx; i++){
-//            glVertex2d(QtoD(i*mesh->hx), QtoD(0.0));
-//            glVertex2d(QtoD(i*mesh->hx), QtoD(mesh->ly));
-//        }
-//        for(int i=0; i<mesh->ny; i++){
-//            glVertex2d(QtoD(0.0), QtoD(i*mesh->hy));
-//            glVertex2d(QtoD(mesh->lx), QtoD(i*mesh->hy));
-//        }
-//        glEnd();
     }
-
-
-//    int nxi = mesh->nx;
-//    int nyi = mesh->ny;
-
-//    tFloat xi[2*nxi*nyi], yi[2*nxi*nyi], ti[2*nxi*nyi];
-
-//    for(int j = 0; j<nyi; j++)
-//    for(int i = 0; i<nxi; i++)
-//    {
-//        xi[2*(i+j*nxi)] = mesh->nodes[i+j*nxi].x;
-//        yi[2*(i+j*nxi)] = mesh->nodes[i+j*nxi].y;
-//        ti[2*(i+j*nxi)] = X[i+j*nxi];
-//    }
-
-//    for(int j = 0; j<nyi; j++)
-//    for(int i = 0; i<nxi-1; i++)
-//    {
-//        xi[2*(i+j*nxi)+1] = 0.5*(mesh->nodes[i+j*nxi].x + mesh->nodes[i+j*nxi+1].x);
-//        yi[2*(i+j*nxi)+1] = mesh->nodes[i+j*nxi].y;
-//        ti[2*(i+j*nxi)+1] = 0.5*(X[i+j*nxi] + X[i+j*nxi+1]);
-//    }
-
-//    for(int j = 0; j<nyi-1; j++)
-//    for(int i = 0; i<nxi; i++)
-//    {
-//        xi[2*(i+(j+1)*nxi)] = mesh->nodes[i+j*nxi].x;
-//        yi[2*(i+(j+1)*nxi)] = 0.5*(mesh->nodes[i+j*nxi].y + mesh->nodes[i+(j+1)*nxi].y);
-//        ti[2*(i+(j+1)*nxi)] = 0.5*(X[i+j*nxi] + X[i+(j+1)*nxi]);
-//    }
-
-//    for(int j = 0; j<nyi-1; j++)
-//    for(int i = 0; i<nxi-1; i++)
-//    {
-//        xi[2*(i+(j+1)*nxi)+1] = 0.5*(mesh->nodes[i+j*nxi].x + mesh->nodes[i+j*nxi+1].x);
-//        yi[2*(i+(j+1)*nxi)+1] = 0.5*(mesh->nodes[i+j*nxi].y + mesh->nodes[i+(j+1)*nxi].y);
-//        ti[2*(i+(j+1)*nxi)+1] = 0.25*(X[i+j*nxi] + X[i+(j+1)*nxi] + X[i+j*nxi+1] + X[i+(j+1)*nxi+1]);
-//    }
-
-//    for(int i=0; i<2*nxi*(nyi+1); i++)
-//        std::cout<<"\n"<<i<<"\t"<<QtoD(xi[i])<<"\t"<<QtoD(yi[i])<<"\t"<<QtoD(ti[i]);
-
 
 
     // Desenha os resultados
@@ -330,39 +264,7 @@ void Graphics::paintGL()
             i+=1;
     }
 
-
-
-//    for(int i=0; i<nxi*(nyi-1); i++){
-
-//        k[0] = i;
-//        k[1] = i+1;
-//        k[2] = i+nxi+1;
-//        k[3] = i+nxi;
-
-//        //i += 3;
-
-//        glBegin(GL_QUADS);
-//        for(int p = 0; p<4; p++){
-//            Tn = QtoD(ti[k[p]]);
-//            R = Tn<T2?  0. : (Tn>T3? 1. : (Tn-T2)/(T3-T2));
-//            B = Tn>T2?  0. : (Tn<T1? 1. : (T2-Tn)/(T2-T1));
-//            G = Tn<T1? (Tn-T0)/(T1-T0) : Tn>T3 ? (T4-Tn)/(T4-T3) : 1.;
-//            glColor4d(R,G,B,0.8);
-
-//            glVertex2d(QtoD(xi[k[p]]), QtoD(yi[k[p]]));
-//        }
-//        glEnd();
-
-//        if(i+1 && !((i+2)%nxi))
-//            i+=1;
-//    }
-
-    //glPopMatrix();
-    //glLoadIdentity();
-    // Desenha legenda (escala de cores)
     this->drawLegend(T0, T1, T2, T3, T4);
-    //    glPopMatrix();
-    //    glLoadIdentity();
 
 }
 
@@ -383,7 +285,6 @@ void Graphics::drawLegend(double T0, double T1, double T2, double T3, double T4)
 {
     //glPushMatrix();
     //glTranslated(xmin + 0.9*(xmax-xmin), ymin + 0.15*(ymax-ymin), 0.0);
-
     glTranslated(1.2, 0.0, 0.0);
 
     //glPushMatrix();

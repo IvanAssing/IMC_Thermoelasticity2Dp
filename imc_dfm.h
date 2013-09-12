@@ -42,8 +42,8 @@ typedef long int tInteger; // Tipo Inteiro (64 bits)
 
 #define QtoD(value) static_cast<double>(value)
 
-std::string print(tFloat value);
-
+std::string print(tFloat value); // 33 casas
+std::string print2(tFloat value); // 3 casas
 
 
 #endif // IMC_DFM_H
